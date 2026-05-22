@@ -1,0 +1,51 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1 class="page-title">CSV Processing Job Logs</h1>
+    <p class="page-subtitle">This page shows the history of all manual and automated CSV processing jobs.</p>
+  </div>
+
+  <div class="table-card">
+    <p-table
+      [value]="jobLogs()"
+      [loading]="loading()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [tableStyle]="{'min-width': '50rem'}"
+      sortField="job_id" 
+      [sortOrder]="-1"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="job_id">Job ID <p-sortIcon field="job_id"></p-sortIcon></th>
+          <th pSortableColumn="job_type">Type <p-sortIcon field="job_type"></p-sortIcon></th>
+          <th pSortableColumn="run_timestamp">Timestamp <p-sortIcon field="run_timestamp"></p-sortIcon></th>
+          <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+          <th pSortableColumn="source_file_name">File Name <p-sortIcon field="source_file_name"></p-sortIcon></th>
+          <th>Inserted</th>
+          <th>Updated</th>
+          <th>Archived</th>
+          <th>Message</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-log>
+        <tr>
+          <td>{{ log.job_id }}</td>
+          <td>{{ log.job_type }}</td>
+          <td>{{ log.run_timestamp | date:'medium' }}</td>
+          <td><p-tag [value]="log.status" [severity]="getSeverity(log.status)"></p-tag></td>
+          <td>{{ log.source_file_name }}</td>
+          <td>{{ log.records_inserted }}</td>
+          <td>{{ log.records_updated }}</td>
+          <td>{{ log.records_archived }}</td>
+          <td class="message-cell">{{ log.message }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9">No job logs found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

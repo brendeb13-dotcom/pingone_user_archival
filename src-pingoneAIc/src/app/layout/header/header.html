@@ -1,0 +1,19 @@
+<header class="app-header">
+  <div class="header-content">
+    <div class="header-left">
+      <h1 class="app-logo">
+        <span class="logo-icon">👤</span>
+        PingOne AIC User Archival
+      </h1>
+    </div>
+
+    <div class="header-right">
+      <div class="header-actions">
+        <span class="user-info">Welcome, {{ username }}</span>
+        <div class="divider"></div>
+        <span *ngIf="lastLogin">Last login: {{ lastLogin | date:'short' }}</span>
+        <button class="btn-logout" (click)="logout()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</header>

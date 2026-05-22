@@ -1,0 +1,148 @@
+<div class="dashboard-grid">
+
+  <!-- 1. User Details -->
+  <div class="grid-item span-4">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="label">Total Users</span>
+        <span class="value">{{ totalUsers() }}</span>
+      </div>
+
+      <div class="stat-card active">
+        <span class="label">Active</span>
+        <span class="value">{{ activeUsers() }}</span>
+      </div>
+
+      <div class="stat-card inactive">
+        <span class="label">Inactive</span>
+        <span class="value">{{ inactiveUsers() }}</span>
+      </div>
+
+      <div class="stat-card deactivated">
+        <span class="label">Others</span>
+        <span class="value">{{ otherStatusUsers() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Timely Stats Tiles -->
+  <div class="grid-item span-4">
+    <div class="stats-grid">
+
+      <div class="stat-card clickable"
+           (click)="showTimelyUsers('today')">
+        <span class="label">Today</span>
+        <span class="value">{{ todayCount() }}</span>
+      </div>
+
+      <div class="stat-card clickable"
+           (click)="showTimelyUsers('week')">
+        <span class="label">Last 7 Days</span>
+        <span class="value">{{ weekCount() }}</span>
+      </div>
+
+      <div class="stat-card clickable"
+           (click)="showTimelyUsers('month')">
+        <span class="label">This Month</span>
+        <span class="value">{{ monthCount() }}</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. Employee/Contractor/Other Cards -->
+  <div class="grid-item span-4">
+    <div class="card-grid">
+
+      <div class="card clickable"
+           (click)="showUserType('employee')">
+        <h3>Employees</h3>
+        <p>{{ employeeCard().count }}</p>
+      </div>
+
+      <div class="card clickable"
+           (click)="showUserType('contractor')">
+        <h3>Contractors</h3>
+        <p>{{ contractorCard().count }}</p>
+      </div>
+
+      <div class="card clickable"
+           (click)="showUserType('other')">
+        <h3>Others</h3>
+        <p>{{ otherCard().count }}</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. Data Grid -->
+  <div class="grid-item span-4">
+    <div class="table-card">
+
+      <h2>{{ gridTitle() }}</h2>
+
+      <table class="data-table">
+
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Country</th>
+            <th>Account Status</th>
+            <th>Operation</th>
+          </tr>
+        </thead>
+
+        <tbody *ngIf="!loading()">
+
+          <tr *ngFor="let user of gridData()">
+            <td>{{ user.name || 'N/A' }}</td>
+            <td>{{ user.email || 'N/A' }}</td>
+            <td>{{ user.country || 'N/A' }}</td>
+            <td>{{ user.accountstatus || 'N/A' }}</td>
+            <td>{{ user.operation_type || 'N/A' }}</td>
+          </tr>
+
+          <tr *ngIf="gridData().length === 0">
+            <td colspan="5" class="empty">
+              No users to display.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+      <div *ngIf="loading()" class="spinner">
+        Loading...
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. Trend Chart -->
+  <div class="grid-item span-4">
+    <div class="chart-container">
+      <h3>ADD / UPDATE Trends</h3>
+      <canvas #trendChart></canvas>
+    </div>
+  </div>
+
+  <!-- 6. Doughnut Charts -->
+  <div class="grid-item span-4">
+    <div class="stats-grid">
+
+      <div class="chart-card">
+        <h3>User Distribution</h3>
+        <canvas #statusChart></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>ADD/UPDATE Ops</h3>
+        <canvas #operationChart></canvas>
+      </div>
+
+    </div>
+  </div>
+
+</div>

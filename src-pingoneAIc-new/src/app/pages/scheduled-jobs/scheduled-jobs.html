@@ -1,0 +1,114 @@
+<div class="page-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Scheduled Jobs</h1>
+      <p>View and manage your upcoming scheduled jobs</p>
+    </div>
+    <button class="btn-primary">+ Schedule Job</button>
+  </div>
+
+  <div class="filters-bar">
+    <div class="filter-group">
+      <select class="filter-select">
+        <option>All Statuses</option>
+        <option>Pending</option>
+        <option>Running</option>
+        <option>Completed</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <input type="date" class="filter-input" />
+    </div>
+    <div class="filter-group">
+      <input type="search" class="filter-input" placeholder="Search jobs..." />
+    </div>
+  </div>
+
+  <div class="jobs-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Job ID</th>
+          <th>Job Name</th>
+          <th>Type</th>
+          <th>Scheduled Time</th>
+          <th>Status</th>
+          <th>Progress</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="job-id">JOB-2024-001</span></td>
+          <td>User Offboarding Batch</td>
+          <td><span class="badge type">Offboarding</span></td>
+          <td>Feb 10, 2024 - 10:00 AM</td>
+          <td><span class="status pending">Pending</span></td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%;"></div>
+            </div>
+          </td>
+          <td>
+            <button class="btn-icon" title="Edit">✎</button>
+            <button class="btn-icon" title="View">👁</button>
+            <button class="btn-icon" title="Delete">🗑</button>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="job-id">JOB-2024-002</span></td>
+          <td>Daily Email Report</td>
+          <td><span class="badge type">Email</span></td>
+          <td>Feb 5, 2024 - 06:00 PM</td>
+          <td><span class="status running">Running</span></td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 65%;"></div>
+            </div>
+          </td>
+          <td>
+            <button class="btn-icon" title="Edit">✎</button>
+            <button class="btn-icon" title="View">👁</button>
+            <button class="btn-icon" title="Delete">🗑</button>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="job-id">JOB-2024-003</span></td>
+          <td>User Provisioning</td>
+          <td><span class="badge type">Provisioning</span></td>
+          <td>Feb 8, 2024 - 02:30 PM</td>
+          <td><span class="status completed">Completed</span></td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 100%;"></div>
+            </div>
+          </td>
+          <td>
+            <button class="btn-icon" title="Edit">✎</button>
+            <button class="btn-icon" title="View">👁</button>
+            <button class="btn-icon" title="Delete">🗑</button>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="job-id">JOB-2024-004</span></td>
+          <td>Account Cleanup</td>
+          <td><span class="badge type">Cleanup</span></td>
+          <td>Feb 12, 2024 - 11:00 PM</td>
+          <td><span class="status pending">Pending</span></td>
+          <td>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 0%;"></div>
+            </div>
+          </td>
+          <td>
+            <button class="btn-icon" title="Edit">✎</button>
+            <button class="btn-icon" title="View">👁</button>
+            <button class="btn-icon" title="Delete">🗑</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-pagination [total]="100" [size]="10" />
+</div>

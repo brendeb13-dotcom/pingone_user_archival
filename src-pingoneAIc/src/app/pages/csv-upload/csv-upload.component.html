@@ -1,0 +1,26 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <h1 class="page-title">CSV User Upload (Extract from PingOne AIC Report)</h1>
+    <p class="page-subtitle">
+      Upload a CSV file to add or update user records. The system will process the file and reconcile the data with the existing user database.
+    </p>
+  </div>
+
+  <div class="upload-card">
+    <div class="file-input-wrapper">
+      <label for="csv-upload-input" class="file-input-label">Choose File</label>
+      <input 
+        id="csv-upload-input"
+        type="file" 
+        (change)="onFileSelected($event)" 
+        accept=".csv"
+        class="file-input"
+      />
+    </div>
+    <div class="empty-template">
+      <i class="pi pi-upload"></i>
+      <p>Select a file to upload. The upload will start automatically.</p>
+    </div>
+  </div>
+</div>

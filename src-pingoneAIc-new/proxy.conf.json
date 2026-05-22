@@ -1,0 +1,8 @@
+{
+  "/openidm": {
+    "target": "https://openam-bruneishell-ase1-dev.id.forgerock.io",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

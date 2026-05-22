@@ -1,0 +1,16 @@
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideRouter } from '@angular/router';
+import { provideOAuthClient } from 'angular-oauth2-oidc';
+import { AppComponent } from './app/app.component';
+import { routes } from './app/app.routes';
+import { tokenInterceptor } from './app/Core/auth/token.interceptor';
+
+
+bootstrapApplication(AppComponent, {
+providers: [
+provideRouter(routes),
+provideOAuthClient(),
+provideHttpClient(withInterceptors([tokenInterceptor]))
+]
+});

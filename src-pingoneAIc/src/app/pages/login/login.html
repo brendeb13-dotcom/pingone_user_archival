@@ -1,0 +1,57 @@
+<div class="login-container">
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <h1>PingOne AIC User Archival</h1>
+        <p>Access your enterprise dashboard</p>
+      </div>
+      
+      <form class="login-form" (ngSubmit)="login()">
+        <div class="form-group">
+          <label for="username">Username or Email</label>
+          <input 
+            type="text" 
+            id="username" 
+            class="form-input" 
+            placeholder="Enter your username"
+            [(ngModel)]="username"
+            name="username"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            class="form-input" 
+            placeholder="Enter your password"
+            [(ngModel)]="password"
+            name="password"
+            required
+          />
+        </div>
+
+        <div *ngIf="error" class="error-message">
+          {{ errorMessage }}
+        </div>
+
+        <div class="form-remember">
+          <input type="checkbox" id="remember" />
+          <label for="remember">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="isLoading">
+          {{ isLoading ? 'Signing In...' : 'Sign In' }}
+        </button>
+      </form>
+    </div>
+
+    <div class="login-side">
+      <div class="side-content">
+        <h2>Welcome to PingOne AIC User Archival Portal for User Details.</h2>
+      </div>
+    </div>
+  </div>
+</div>

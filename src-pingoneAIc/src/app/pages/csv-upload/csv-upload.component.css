@@ -1,0 +1,56 @@
+.page-container {
+  padding: 2rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #666;
+}
+
+.upload-card {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* PrimeNG Overrides for a more modern feel */
+:host ::ng-deep .p-fileupload {
+  border: none;
+}
+
+:host ::ng-deep .p-fileupload-buttonbar {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+:host ::ng-deep .p-fileupload-content {
+  border: 2px dashed #c8c8c8;
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.empty-template {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+}
+
+.empty-template .pi-upload {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
