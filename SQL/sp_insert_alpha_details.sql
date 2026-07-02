@@ -53,7 +53,7 @@ CREATE OR REPLACE FUNCTION sp_insert_alpha_details(
     p_frIndexedDate2 VARCHAR(50) DEFAULT NULL,
     p_frIndexedDate1 VARCHAR(50) DEFAULT NULL
 )
-RETURNS VOID AS $
+RETURNS VOID AS $$
 BEGIN
     INSERT INTO tbl_AlphaUserDetails (
         _id, _rev, custom_RegCompanyName, frUnindexedString1, frUnindexedString2, frUnindexedString3,
@@ -133,4 +133,4 @@ BEGIN
         frIndexedDate2 = EXCLUDED.frIndexedDate2,
         frIndexedDate1 = EXCLUDED.frIndexedDate1;
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;

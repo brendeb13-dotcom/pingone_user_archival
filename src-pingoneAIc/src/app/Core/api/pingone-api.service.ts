@@ -33,6 +33,13 @@ interface DashboardData {
   month_count: number;
 }
 
+export interface ActivityTrend {
+  date: string;
+  inserted: number;
+  updated: number;
+  archived: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PingoneApiService {
     private backendUrl = environment.backendApiUrl;
@@ -43,6 +50,12 @@ export class PingoneApiService {
         return this.http.get<DashboardData>(
             `${this.backendUrl}/api/dashboard-data`
         );
+    }
+
+    getActivityTrend(): Observable<ActivityTrend[]> {
+      return this.http.get<ActivityTrend[]>(
+        `${this.backendUrl}/api/activity-trend`
+      );
     }
 
     getTimelyUsers(period: string): Observable<DashboardUser[]> {

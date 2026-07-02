@@ -10,7 +10,10 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
-import { PingoneApiService } from '../../Core/api/pingone-api.service';
+import {
+  PingoneApiService,
+  ActivityTrend,
+} from '../../Core/api/pingone-api.service';
 
 interface DashboardUser {
   name: string | null;
@@ -104,6 +107,7 @@ export default class DashboardComponent
   }
 
   ngAfterViewInit(): void {
+    this.loadTrendChartData();
   }
 
   loadDashboardData(): void {
@@ -325,56 +329,85 @@ export default class DashboardComponent
       }
     );
 
-    // Trend Chart
-
-    // Trend Chart
-
-this.trendChartInstance = new Chart(
-  this.trendChartRef.nativeElement,
-  {
-    type: 'bar',
-
-    data: {
-      labels: [
-        'ADD Ops',
-        'UPDATE Ops'
-      ],
-
-      datasets: [{
-        label: 'Operations',
-
-        data: [
-          this.addOps(),
-          this.updateOps()
-        ],
-
-        backgroundColor: [
-          '#3b82f6',
-          '#14b8a6'
-        ],
-
-        borderRadius: 8,
-        borderWidth: 1
-      }]
-    },
-
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-
-      plugins: {
-        legend: {
-          display: false
-        }
-      },
-
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
+    // The trend chart is now loaded and rendered independently.
   }
-);
+
+  loadTrendChartData(): void {
+    this.api.getActivityTrend().subscribe({
+      next: (trendData) => {
+        this.renderTrendChart(trendData);
+      },
+      error: (err) => {
+        console.error('Failed to load trend data:', err);
+      },
+    });
+  }
+
+  renderTrendChart(data: ActivityTrend[]): void {
+    if (!this.trendChartRef) {
+      console.error('Trend chart canvas element not found!');
+      return;
+    }
+
+    const labels = data.map((d) => d.date);
+    const insertedData = data.map((d) => d.inserted);
+    const updatedData = data.map((d) => d.updated);
+    const archivedData = data.map((d) => d.archived);
+
+    this.trendChartInstance?.destroy();
+
+    this.trendChartInstance = new Chart(this.trendChartRef.nativeElement, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Inserted',
+            data: insertedData,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+          {
+            label: 'Updated',
+            data: updatedData,
+            borderColor: '#14b8a6',
+            backgroundColor: 'rgba(20, 184, 166, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+          {
+            label: 'Archived',
+            data: archivedData,
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            fill: true,
+            tension: 0.4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0, // Ensure y-axis ticks are integers
+            },
+          },
+        },
+      },
+    });
   }
 }

@@ -3,42 +3,74 @@
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .page-title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #333;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--text-color);
 }
 
 .page-subtitle {
   font-size: 1rem;
-  color: #666;
+  color: var(--text-color-secondary);
 }
 
 .table-card {
-  background-color: #ffffff;
-  padding: 2rem;
+  background-color: var(--surface-color);
+  padding: 0; /* Remove padding to allow table to fill card */
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  overflow: hidden; /* Important for border-radius on table */
 }
 
 .message-cell {
-  max-width: 300px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 400px; /* Allow more width */
+  white-space: normal; /* Allow text to wrap */
+  word-break: break-word; /* Break long words if necessary */
+  cursor: pointer;
 }
 
 /* PrimeNG Overrides */
 :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-  background-color: #f8f9fa;
-  color: #495057;
-  border-bottom: 1px solid #dee2e6;
+  background: var(--surface-color);
+  color: var(--text-color-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1rem 1.5rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr {
+  transition: background-color 0.2s ease; /* Add transition for smooth hover */
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 0.95rem;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr:hover {
+  background-color: var(--primary-color-light);
 }
 
 :host ::ng-deep .p-tag {
   font-weight: 600;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .p-tag.p-tag-success {
+  background-color: var(--success-color-light);
+  color: #166534;
+}
+
+:host ::ng-deep .p-tag.p-tag-danger {
+  background-color: var(--danger-color-light);
+  color: #991b1b;
 }

@@ -8,103 +8,160 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 1.5rem; /* Increased margin */
 }
 
 .page-title {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 1.75rem; /* Slightly larger title */
+  font-weight: 700;
   margin: 0;
 }
 
 .page-subtitle {
-  color: #6b7280;
-  margin-top: 4px;
+  color: var(--text-color-secondary);
+  margin-top: 0.25rem;
+  font-size: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* Buttons */
+.btn-export {
+  background: #117a28 !important;
+  color: white !important;
+  border: none !important;
+  width: 42px !important; /* Fixed width */
+  height: 42px !important; /* Fixed height */
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.2s ease !important;
+}
+
+.btn-export:hover {
+  background: #117a28 !important; /* Darker green on hover */
+}
+
 .btn-primary {
-  background: #2563eb;
+  background: #117a28;
   color: white;
   border: none;
-  padding: 10px 16px;
+  padding: 0.75rem 1.25rem;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 
 .btn-primary:hover {
-  background: #1e40af;
+  background: #117a28; /* A slightly darker shade of the primary color */
 }
 
 /* Filters */
 .filters-card {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  background: white;
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  margin-bottom: 10px;
+  gap: 1rem;
+  background: var(--surface-color);
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
 }
 
 .filter label {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color-secondary);
+  margin-bottom: 0.5rem;
   display: block;
 }
 
 .filter input {
   width: 100%;
-  padding: 8px 10px;
+  padding: 0.75rem 1rem;
   border-radius: 6px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .filter input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--primary-color-light);
 }
 
 /* Table */
 .table-card {
-  background: white;
-  border-radius: 10px;
-  overflow: auto;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  background: var(--surface-color);
+  border-radius: 8px;
+  overflow-x: auto; /* Allow horizontal scrolling */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  overflow: auto;
-}
-
-.data-table th {
-  background: #f3f4f6;
+/* PrimeNG Table Overrides */
+:host ::ng-deep .p-datatable-thead > tr > th {
+  background: var(--surface-color);
   text-align: left;
-  padding: 12px;
+  padding: 1rem 1.5rem;
   cursor: pointer;
   user-select: none;
-  font-size: 14px;
-  width: auto;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.data-table th:hover {
-  background: #e5e7eb;
+:host ::ng-deep .p-datatable-thead > tr > th:hover {
+  background: var(--background-color);
 }
 
-.data-table td {
-  padding: 12px;
-  border-top: 1px solid #e5e7eb;
-  font-size: 14px;
-  width: auto;
+:host ::ng-deep .p-datatable-tbody > tr {
+  transition: background-color 0.2s ease; /* Add transition for smooth hover */
 }
 
-.data-table tr:hover {
-  background: #f9fafb;
+:host ::ng-deep .p-datatable-tbody > tr > td {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.95rem;
+  color: var(--text-color);
+  white-space: nowrap; /* Prevent text wrapping */
+  /* Removed overflow, text-overflow, and max-width to show full content */
+}
+
+:host ::ng-deep .p-datatable-tbody > tr:hover {
+  background: var(--primary-color-light);
+}
+
+.sort-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.column-filter {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  background-color: var(--background-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.column-filter:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-light);
+  background-color: var(--surface-color);
 }
 
 .mono {

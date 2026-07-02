@@ -10,12 +10,12 @@
   flex: 1;
   height: 100%;
   overflow: hidden;
-}
-
 .layout-main {
   flex: 1;
   overflow-y: auto;
-  background-color: #f5f7fa;
+  background-color: var(--primary-color-light); /* Use light blue for a distinctive background */
+  padding: 2rem;
+}/* Add padding for content spacing */
 }
 
 @media (max-width: 768px) {

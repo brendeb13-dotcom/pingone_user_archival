@@ -8,9 +8,12 @@
         Manage and view user records
       </p>
     </div>
-    <button class="btn-primary" (click)="refresh()" [disabled]="loading()">
-      🔄 Refresh
-    </button>
+    <div class="header-actions">
+      <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="dt.exportCSV()" class="btn-export" pTooltip="Export to CSV" tooltipPosition="bottom"></button>
+      <button class="btn-primary" (click)="refresh()" [disabled]="loading()">
+        🔃 Refresh
+      </button>
+    </div>
   </div>
 
   <!-- Table -->
@@ -25,11 +28,6 @@
       [autoLayout]="true"
       #dt
     >
-      <ng-template pTemplate="caption">
-        <div class="table-header">
-          <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="dt.exportCSV()" class="p-button-success p-mr-2" pTooltip="Export to CSV" tooltipPosition="bottom"></button>
-        </div>
-      </ng-template>
       <ng-template pTemplate="header">
           <tr>
             <th *ngFor="let col of tableColumns()" [pSortableColumn]="col.field">

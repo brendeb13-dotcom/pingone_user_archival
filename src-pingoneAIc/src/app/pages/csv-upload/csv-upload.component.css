@@ -3,26 +3,26 @@
 }
 
 .page-header {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .page-title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #333;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--text-color);
 }
 
 .page-subtitle {
   font-size: 1rem;
-  color: #666;
+  color: var(--text-color-secondary);
 }
 
 .upload-card {
-  background-color: #ffffff;
+  background-color: var(--surface-color);
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 /* PrimeNG Overrides for a more modern feel */
@@ -34,12 +34,32 @@
   background: transparent;
   border: none;
   padding: 0;
+  gap: 0.5rem; /* Add space between buttons */
+}
+
+:host ::ng-deep .p-button {
+  background: var(--primary-color) !important;
+  border: none !important;
+  color: white !important;
+  transition: background-color 0.2s ease !important;
+}
+
+:host ::ng-deep .p-button:hover {
+  background: var(--primary-color-dark) !important;
 }
 
 :host ::ng-deep .p-fileupload-content {
-  border: 2px dashed #c8c8c8;
+  border: 2px dashed var(--border-color);
   border-radius: 8px;
-  padding: 2rem;
+  padding: 3rem;
+  background-color: var(--background-color);
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+:host ::ng-deep .p-fileupload-content:hover {
+  border-color: var(--primary-color);
+  background-color: var(--primary-color-light);
+  transform: scale(1.02); /* Add a subtle scale effect */
 }
 
 .empty-template {
@@ -47,10 +67,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #6c757d;
+  color: var(--text-color-secondary);
+  text-align: center;
 }
 
 .empty-template .pi-upload {
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.empty-template p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.empty-template span {
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
 }

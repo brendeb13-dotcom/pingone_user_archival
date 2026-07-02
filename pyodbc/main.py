@@ -38,6 +38,12 @@ def get_db():
 # --- Pydantic Models ---
 from models import AlphaUser, JobLog
 
+class ActivityTrend(BaseModel):
+    date: str
+    inserted: int
+    updated: int
+    archived: int
+
 class DashboardUser(BaseModel):
     name: str | None
     email: str | None
@@ -65,9 +71,22 @@ class DashboardData(BaseModel):
 
 # --- FastAPI App ---
 app = FastAPI()
+
+# Configure CORS
+# In production, this should be set to the specific frontend domain.
+# e.g., "https://your-app.com"
+allowed_origins_str = os.environ.get("ALLOWED_ORIGINS")
+if not allowed_origins_str:
+    print("WARNING: ALLOWED_ORIGINS environment variable not set. CORS will not be configured, which is insecure for development but necessary for production behind a reverse proxy.")
+    allowed_origins = []
+else:
+    allowed_origins = allowed_origins_str.split(",")
+    if "*" in allowed_origins:
+        print("WARNING: Using a wildcard ('*') for ALLOWED_ORIGINS is insecure and not recommended for production.")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -81,7 +100,7 @@ def get_dashboard_data(db=Depends(get_db)):
         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
             # --- Fetch user details for cards ---
             cursor.execute("""
-                SELECT 
+                SELECT
                     frindexedstring2 as user_type,
                     frindexedstring18 as name,
                     frindexedstring6 as email,
@@ -147,7 +166,7 @@ def get_dashboard_data(db=Depends(get_db)):
                     data["inactive_users"] += 1
                 else:
                     data["other_status_users"] += 1
-            
+
             # Set counts after processing all users
             data["employee"]["count"] = len(data["employee"]["users"])
             data["contractor"]["count"] = len(data["contractor"]["users"])
@@ -172,7 +191,7 @@ def get_timely_users(period: str, db=Depends(get_db)):
     try:
         with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
             query = f"""
-                SELECT 
+                SELECT
                     frindexedstring18 as name,
                     frindexedstring6 as email,
                     country,
@@ -226,15 +245,15 @@ def process_csv_and_reconcile(db, contents, filename):
     df = df.astype(object).where(pd.notna(df), None) # Convert numpy.nan to None
 
     cursor = db.cursor()
-    
+
     try:
         # --- Get existing user IDs from the database ---
         cursor.execute("SELECT _id FROM tbl_alphauserdetails")
         db_user_ids = {row[0] for row in cursor.fetchall()}
-        
+
         if '_id' not in df.columns:
             raise HTTPException(status_code=400, detail="CSV must contain an '_id' column.")
-            
+
         csv_user_ids = set(df['_id'].astype(str))
 
         # --- Upsert users from the CSV, with row-level error handling ---
@@ -315,19 +334,23 @@ def process_csv_and_reconcile(db, contents, filename):
                 failed_count += 1
                 print(f"Warning: Failed to process row for UserID {row.get('_id', 'N/A')}. Error: {row_error}")
 
-        # --- Delete users not in the CSV ---
-        users_to_delete = db_user_ids - csv_user_ids
-        deleted_count = 0
-        if users_to_delete:
-            delete_list = tuple(users_to_delete)
-            delete_sql = "DELETE FROM tbl_alphauserdetails WHERE _id IN %s"
-            cursor.execute(delete_sql, (delete_list,))
-            deleted_count = cursor.rowcount
+        # --- Archive users not in the CSV ---
+        users_to_archive = db_user_ids - csv_user_ids
+        archived_count = 0
+        if users_to_archive:
+            for user_id in users_to_archive:
+                try:
+                    # Call the stored procedure for each user to be archived
+                    cursor.execute("SELECT sp_archive_deleted_users(%s);", (user_id,))
+                    archived_count += 1
+                except Exception as e:
+                    # If a single user fails, we can log it and continue
+                    print(f"Warning: Failed to archive user with ID {user_id}. Error: {e}")
 
         return {
-            "inserted": inserted_count, 
-            "updated": updated_count, 
-            "deleted": deleted_count, 
+            "inserted": inserted_count,
+            "updated": updated_count,
+            "archived": archived_count,
             "failed": failed_count
         }
 
@@ -347,18 +370,18 @@ def get_alpha_users(db=Depends(get_db)):
         cursor = db.cursor()
         # Explicitly select and alias columns to avoid issues with leading underscores
         cursor.execute("""
-            SELECT 
-                _id as id, _rev as rev, custom_regcompanyname, frunindexedstring1, frunindexedstring2, 
-                frunindexedstring3, frunindexedstring4, frunindexedstring5, frindexedstring11, 
-                frindexedstring12, frindexedstring10, frindexedstring19, frindexedstring17, 
-                frindexedstring18, frindexedstring15, frindexedstring16, frindexedstring13, 
-                frindexedstring14, givenname, frindexedstring20, telephonenumber, city, 
-                displayname, accountstatus, sn, frunindexeddate1, frindexedstring9, 
-                frindexedstring8, frindexedstring7, frindexedstring6, passwordlastchangedtime, 
-                country, mail, frindexeddate5, frindexeddate4, frindexeddate3, frindexedstring5, 
-                frindexedstring4, frindexedstring3, frindexedstring2, frindexedstring1, 
-                frunindexedinteger3, frunindexedinteger2, frunindexedinteger1, description, 
-                frindexedinteger4, frindexedinteger3, frindexedinteger2, frindexedinteger1, 
+            SELECT
+                _id as id, _rev as rev, custom_regcompanyname, frunindexedstring1, frunindexedstring2,
+                frunindexedstring3, frunindexedstring4, frunindexedstring5, frindexedstring11,
+                frindexedstring12, frindexedstring10, frindexedstring19, frindexedstring17,
+                frindexedstring18, frindexedstring15, frindexedstring16, frindexedstring13,
+                frindexedstring14, givenname, frindexedstring20, telephonenumber, city,
+                displayname, accountstatus, sn, frunindexeddate1, frindexedstring9,
+                frindexedstring8, frindexedstring7, frindexedstring6, passwordlastchangedtime,
+                country, mail, frindexeddate5, frindexeddate4, frindexeddate3, frindexedstring5,
+                frindexedstring4, frindexedstring3, frindexedstring2, frindexedstring1,
+                frunindexedinteger3, frunindexedinteger2, frunindexedinteger1, description,
+                frindexedinteger4, frindexedinteger3, frindexedinteger2, frindexedinteger1,
                 frindexedinteger5, username, frindexeddate2, frindexeddate1
             FROM tbl_alphauserdetails
         """)
@@ -412,15 +435,15 @@ async def upload_alpha_users_csv(file: UploadFile = File(...), db=Depends(get_db
         raise HTTPException(status_code=400, detail="Invalid file type. Please upload a CSV.")
 
     contents = await file.read()
-    
+
     try:
         # Process the CSV and get counts within a single transaction
         result_details = process_csv_and_reconcile(db, contents, file.filename)
 
         # Log the successful job result before committing
         status = "Success" if result_details.get('failed', 0) == 0 else "Partial Success"
-        message = f"{file.filename} processed. Inserted: {result_details['inserted']}, Updated: {result_details['updated']}, Deleted: {result_details['deleted']}, Failed: {result_details['failed']}"
-        log_job(db, "Manual", status, message, result_details['inserted'], result_details['updated'], result_details['deleted'], file.filename)
+        message = f"{file.filename} processed. Inserted: {result_details['inserted']}, Updated: {result_details['updated']}, Archived: {result_details['archived']}, Failed: {result_details['failed']}"
+        log_job(db, "Manual", status, message, result_details['inserted'], result_details['updated'], result_details['archived'], file.filename)
 
         # If processing is successful, commit the transaction
         db.commit()
@@ -429,7 +452,7 @@ async def upload_alpha_users_csv(file: UploadFile = File(...), db=Depends(get_db
             "message": f"Successfully processed {file.filename}",
             "inserted": result_details["inserted"],
             "updated": result_details["updated"],
-            "deleted": result_details["deleted"],
+            "archived": result_details["archived"],
             "failed": result_details["failed"]
         }
     except Exception as e:
@@ -439,17 +462,57 @@ async def upload_alpha_users_csv(file: UploadFile = File(...), db=Depends(get_db
         # Log the failure in a separate transaction
         error_message = f"Failed to process {file.filename}: {str(e)}"
         log_job_failure("Manual", file.filename, error_message)
-        
+
         # Log the full error for debugging
         print("--- TRANSACTION FAILED, ROLLING BACK ---")
         import traceback
         traceback.print_exc()
         print("--- END TRANSACTION FAILED ---")
-        
+
         # Re-raise the exception to return a 500 error to the client
         raise HTTPException(status_code=500, detail=error_message)
         # A more robust solution would log to a file or separate service.
         log_job(db, "CSV Upload", "Failed", str(e), 0, 0, 0, file.filename)
-        
+
         # Return a 500 error to the client
         raise HTTPException(status_code=500, detail=f"An error occurred during CSV processing: {e}")
+
+
+@app.get("/api/activity-trend", response_model=List[ActivityTrend])
+def get_activity_trend(db=Depends(get_db)):
+    """
+    Calculates the daily sum of inserted, updated, and archived records
+    over the last 30 days.
+    """
+    try:
+        with db.cursor(cursor_factory=psycopg2.extras.DictCursor) as cursor:
+            query = """
+                SELECT
+                    DATE(run_timestamp) as date,
+                    SUM(records_inserted) as inserted,
+                    SUM(records_updated) as updated,
+                    SUM(records_archived) as archived
+                FROM
+                    tbl_joblogs
+                WHERE
+                    run_timestamp >= NOW() - INTERVAL '30 days'
+                GROUP BY
+                    DATE(run_timestamp)
+                ORDER BY
+                    date;
+            """
+            cursor.execute(query)
+
+            # Format the results into the Pydantic model
+            trend_data = [
+                ActivityTrend(
+                    date=row['date'].strftime('%Y-%m-%d'),
+                    inserted=row['inserted'] or 0,
+                    updated=row['updated'] or 0,
+                    archived=row['archived'] or 0
+                ) for row in cursor.fetchall()
+            ]
+            return trend_data
+
+    except Exception as e:
+        print(f"ERROR fetching activity trend data: {e}")

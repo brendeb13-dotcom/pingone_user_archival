@@ -198,6 +198,15 @@
   box-shadow: none;
 }
 
+.side-content h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff; /* Restore white text color for readability */
+  text-align: center;
+  line-height: 1.4;
+}
+
+
 .form-footer {
   display: flex;
   align-items: center;

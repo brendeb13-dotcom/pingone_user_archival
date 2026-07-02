@@ -1,138 +1,43 @@
-CREATE OR REPLACE FUNCTION sp_archive_deleted_users(
-    p_id VARCHAR(100),
-    p_rev VARCHAR(100) DEFAULT NULL,
-    p_custom_RegCompanyName VARCHAR(200) DEFAULT NULL,
-    p_frUnindexedString1 VARCHAR(200) DEFAULT NULL,
-    p_frUnindexedString2 VARCHAR(200) DEFAULT NULL,
-    p_frUnindexedString3 VARCHAR(200) DEFAULT NULL,
-    p_frUnindexedString4 VARCHAR(200) DEFAULT NULL,
-    p_frUnindexedString5 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString11 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString12 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString10 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString19 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString17 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString18 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString15 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString16 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString13 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString14 VARCHAR(200) DEFAULT NULL,
-    p_givenName VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString20 VARCHAR(200) DEFAULT NULL,
-    p_telephoneNumber VARCHAR(50) DEFAULT NULL,
-    p_city VARCHAR(100) DEFAULT NULL,
-    p_displayName VARCHAR(200) DEFAULT NULL,
-    p_accountStatus VARCHAR(50) DEFAULT NULL,
-    p_sn VARCHAR(200) DEFAULT NULL,
-    p_frUnindexedDate1 VARCHAR(50) DEFAULT NULL,
-    p_frIndexedString9 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString8 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString7 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString6 VARCHAR(200) DEFAULT NULL,
-    p_passwordLastChangedTime VARCHAR(50) DEFAULT NULL,
-    p_country VARCHAR(100) DEFAULT NULL,
-    p_mail VARCHAR(200) DEFAULT NULL,
-    p_frIndexedDate5 VARCHAR(50) DEFAULT NULL,
-    p_frIndexedDate4 VARCHAR(50) DEFAULT NULL,
-    p_frIndexedDate3 VARCHAR(50) DEFAULT NULL,
-    p_frIndexedString5 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString4 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString3 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString2 VARCHAR(200) DEFAULT NULL,
-    p_frIndexedString1 VARCHAR(200) DEFAULT NULL,
-    p_frUnindexedInteger3 INT DEFAULT 0,
-    p_frUnindexedInteger2 INT DEFAULT 0,
-    p_frUnindexedInteger1 INT DEFAULT 0,
-    p_description TEXT DEFAULT NULL,
-    p_frIndexedInteger4 INT DEFAULT 0,
-    p_frIndexedInteger3 INT DEFAULT 0,
-    p_frIndexedInteger2 INT DEFAULT 0,
-    p_frIndexedInteger1 INT DEFAULT 0,
-    p_frIndexedInteger5 INT DEFAULT 0,
-    p_userName VARCHAR(200) DEFAULT NULL,
-    p_frIndexedDate2 VARCHAR(50) DEFAULT NULL,
-    p_frIndexedDate1 VARCHAR(50) DEFAULT NULL
-)
-RETURNS VOID AS $
+-- This stored procedure archives a user by copying their record from the active
+-- user table to the archive table, and then deleting them from the active table.
+-- This operation is performed in a single transaction.
+CREATE OR REPLACE FUNCTION sp_archive_deleted_users(p_user_id TEXT)
+RETURNS VOID AS $$
 BEGIN
-    INSERT INTO tbl_ArchivedUserDetails (
-        _id, _rev, custom_RegCompanyName, frUnindexedString1, frUnindexedString2, frUnindexedString3,
-        frUnindexedString4, frUnindexedString5, frIndexedString11, frIndexedString12, frIndexedString10,
-        frIndexedString19, frIndexedString17, frIndexedString18, frIndexedString15, frIndexedString16,
-        frIndexedString13, frIndexedString14, givenName, frIndexedString20, telephoneNumber, city,
-        displayName, accountStatus, sn, frUnindexedDate1, frIndexedString9, frIndexedString8,
-        frIndexedString7, frIndexedString6, passwordLastChangedTime, country, mail, frIndexedDate5,
-        frIndexedDate4, frIndexedDate3, frIndexedString5, frIndexedString4, frIndexedString3,
-        frIndexedString2, frIndexedString1, frUnindexedInteger3, frUnindexedInteger2, frUnindexedInteger1,
-        description, frIndexedInteger4, frIndexedInteger3, frIndexedInteger2, frIndexedInteger1,
-        frIndexedInteger5, userName, frIndexedDate2, frIndexedDate1
+    -- Raise a notice for debugging purposes to track which user is being processed.
+    RAISE NOTICE 'Archiving user ID: %', p_user_id;
+
+    -- Copy the full user record from the active table to the archive table.
+    -- The archived_at timestamp is set automatically by the table's default.
+    INSERT INTO tbl_archivedalphauserdetails (
+        _id, _rev, custom_regcompanyname, frunindexedstring1, frunindexedstring2, frunindexedstring3,
+        frunindexedstring4, frunindexedstring5, frindexedstring11, frindexedstring12, frindexedstring10,
+        frindexedstring19, frindexedstring17, frindexedstring18, frindexedstring15, frindexedstring16,
+        frindexedstring13, frindexedstring14, givenname, frindexedstring20, telephonenumber, city,
+        displayname, accountstatus, sn, frunindexeddate1, frindexedstring9, frindexedstring8,
+        frindexedstring7, frindexedstring6, passwordlastchangedtime, country, mail, frindexeddate5,
+        frindexeddate4, frindexeddate3, frindexedstring5, frindexedstring4, frindexedstring3,
+        frindexedstring2, frindexedstring1, frunindexedinteger3, frunindexedinteger2, frunindexedinteger1,
+        description, frindexedinteger4, frindexedinteger3, frindexedinteger2, frindexedinteger1,
+        frindexedinteger5, username, frindexeddate2, frindexeddate1, last_modified, operation_type
     )
-    VALUES (
-        p_id, p_rev, p_custom_RegCompanyName, p_frUnindexedString1, p_frUnindexedString2, p_frUnindexedString3,
-        p_frUnindexedString4, p_frUnindexedString5, p_frIndexedString11, p_frIndexedString12, p_frIndexedString10,
-        p_frIndexedString19, p_frIndexedString17, p_frIndexedString18, p_frIndexedString15, p_frIndexedString16,
-        p_frIndexedString13, p_frIndexedString14, p_givenName, p_frIndexedString20, p_telephoneNumber, p_city,
-        p_displayName, p_accountStatus, p_sn, p_frUnindexedDate1, p_frIndexedString9, p_frIndexedString8,
-        p_frIndexedString7, p_frIndexedString6, p_passwordLastChangedTime, p_country, p_mail, p_frIndexedDate5,
-        p_frIndexedDate4, p_frIndexedDate3, p_frIndexedString5, p_frIndexedString4, p_frIndexedString3,
-        p_frIndexedString2, p_frIndexedString1, p_frUnindexedInteger3, p_frUnindexedInteger2, p_frUnindexedInteger1,
-        p_description, p_frIndexedInteger4, p_frIndexedInteger3, p_frIndexedInteger2, p_frIndexedInteger1,
-        p_frIndexedInteger5, p_userName, p_frIndexedDate2, p_frIndexedDate1
-    )
-    ON CONFLICT (_id) DO UPDATE SET
-        deletion_count = tbl_ArchivedUserDetails.deletion_count + 1,
-        last_deleted_at = NOW(),
-        _rev = EXCLUDED._rev,
-        custom_RegCompanyName = EXCLUDED.custom_RegCompanyName,
-        frUnindexedString1 = EXCLUDED.frUnindexedString1,
-        frUnindexedString2 = EXCLUDED.frUnindexedString2,
-        frUnindexedString3 = EXCLUDED.frUnindexedString3,
-        frUnindexedString4 = EXCLUDED.frUnindexedString4,
-        frUnindexedString5 = EXCLUDED.frUnindexedString5,
-        frIndexedString11 = EXCLUDED.frIndexedString11,
-        frIndexedString12 = EXCLUDED.frIndexedString12,
-        frIndexedString10 = EXCLUDED.frIndexedString10,
-        frIndexedString19 = EXCLUDED.frIndexedString19,
-        frIndexedString17 = EXCLUDED.frIndexedString17,
-        frIndexedString18 = EXCLUDED.frIndexedString18,
-        frIndexedString15 = EXCLUDED.frIndexedString15,
-        frIndexedString16 = EXCLUDED.frIndexedString16,
-        frIndexedString13 = EXCLUDED.frIndexedString13,
-        frIndexedString14 = EXCLUDED.frIndexedString14,
-        givenName = EXCLUDED.givenName,
-        frIndexedString20 = EXCLUDED.frIndexedString20,
-        telephoneNumber = EXCLUDED.telephoneNumber,
-        city = EXCLUDED.city,
-        displayName = EXCLUDED.displayName,
-        accountStatus = EXCLUDED.accountStatus,
-        sn = EXCLUDED.sn,
-        frUnindexedDate1 = EXCLUDED.frUnindexedDate1,
-        frIndexedString9 = EXCLUDED.frIndexedString9,
-        frIndexedString8 = EXCLUDED.frIndexedString8,
-        frIndexedString7 = EXCLUDED.frIndexedString7,
-        frIndexedString6 = EXCLUDED.frIndexedString6,
-        passwordLastChangedTime = EXCLUDED.passwordLastChangedTime,
-        country = EXCLUDED.country,
-        mail = EXCLUDED.mail,
-        frIndexedDate5 = EXCLUDED.frIndexedDate5,
-        frIndexedDate4 = EXCLUDED.frIndexedDate4,
-        frIndexedDate3 = EXCLUDED.frIndexedDate3,
-        frIndexedString5 = EXCLUDED.frIndexedString5,
-        frIndexedString4 = EXCLUDED.frIndexedString4,
-        frIndexedString3 = EXCLUDED.frIndexedString3,
-        frIndexedString2 = EXCLUDED.frIndexedString2,
-        frIndexedString1 = EXCLUDED.frIndexedString1,
-        frUnindexedInteger3 = EXCLUDED.frUnindexedInteger3,
-        frUnindexedInteger2 = EXCLUDED.frUnindexedInteger2,
-        frUnindexedInteger1 = EXCLUDED.frUnindexedInteger1,
-        description = EXCLUDED.description,
-        frIndexedInteger4 = EXCLUDED.frIndexedInteger4,
-        frIndexedInteger3 = EXCLUDED.frIndexedInteger3,
-        frIndexedInteger2 = EXCLUDED.frIndexedInteger2,
-        frIndexedInteger1 = EXCLUDED.frIndexedInteger1,
-        frIndexedInteger5 = EXCLUDED.frIndexedInteger5,
-        userName = EXCLUDED.userName,
-        frIndexedDate2 = EXCLUDED.frIndexedDate2,
-        frIndexedDate1 = EXCLUDED.frIndexedDate1;
+    SELECT
+        _id, _rev, custom_regcompanyname, frunindexedstring1, frunindexedstring2, frunindexedstring3,
+        frunindexedstring4, frunindexedstring5, frindexedstring11, frindexedstring12, frindexedstring10,
+        frindexedstring19, frindexedstring17, frindexedstring18, frindexedstring15, frindexedstring16,
+        frindexedstring13, frindexedstring14, givenname, frindexedstring20, telephonenumber, city,
+        displayname, accountstatus, sn, frunindexeddate1, frindexedstring9, frindexedstring8,
+        frindexedstring7, frindexedstring6, passwordlastchangedtime, country, mail, frindexeddate5,
+        frindexeddate4, frindexeddate3, frindexedstring5, frindexedstring4, frindexedstring3,
+        frindexedstring2, frindexedstring1, frunindexedinteger3, frunindexedinteger2, frunindexedinteger1,
+        description, frindexedinteger4, frindexedinteger3, frindexedinteger2, frindexedinteger1,
+        frindexedinteger5, username, frindexeddate2, frindexeddate1, last_modified, operation_type
+    FROM tbl_alphauserdetails
+    WHERE _id = p_user_id;
+
+    -- Delete the user from the active table now that they are archived.
+    DELETE FROM tbl_alphauserdetails
+    WHERE _id = p_user_id;
+
 END;
-$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;

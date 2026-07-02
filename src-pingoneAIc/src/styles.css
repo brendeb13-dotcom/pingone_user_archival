@@ -1,1 +1,43 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* --- Modern Design System --- */
+
+/* 1. Import a clean, professional font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* 2. Define a new, modern color palette using CSS variables */
+:root {
+  --primary-color: #007bff; /* A vibrant, modern blue */
+  --primary-color-light: #e6f2ff;
+  --secondary-color: #6c757d; /* A neutral secondary color for text and borders */
+  --background-color: #f8f9fa; /* A very light grey for the main background */
+  --surface-color: #ffffff; /* White for cards, tables, and surfaces */
+  --text-color: #212529; /* A dark, readable text color */
+  --text-color-secondary: #6c757d;
+  --border-color: #dee2e6; /* A light border color */
+  --success-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+}
+
+/* 3. Apply the new design system globally */
+body {
+  font-family: 'Inter', sans-serif; /* Use the new font */
+  background-color: var(--background-color); /* Set the main background color */
+  color: var(--text-color);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 4. Improve base element styles */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600; /* Make headers bolder */
+  color: var(--text-color);
+}
+
+/* 5. Add a subtle transition for a more "dynamic" feel on all elements */
+* {
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
